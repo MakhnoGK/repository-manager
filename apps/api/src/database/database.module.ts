@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Account } from '~/auth/entities/account.entity';
+import { User } from '~/users/entities/user.entity';
 
 @Module({
     imports: [
@@ -11,7 +11,7 @@ import { Account } from '~/auth/entities/account.entity';
             database: 'repository-manager',
             username: 'root',
             password: 'root',
-            entities: [Account],
+            entities: [User],
             synchronize: true,
         }),
     ],

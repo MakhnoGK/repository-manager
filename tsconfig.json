@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./apps/client"
+    }
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
+}

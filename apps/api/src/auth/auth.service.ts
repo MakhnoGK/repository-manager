@@ -1,23 +1,44 @@
+import { hash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { hash } from 'crypto';
-import { Repository } from 'typeorm';
-import { Account } from '~/auth/entities/account.entity';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterRequestDto } from '~/auth/dto/register-request.dto';
+import { UsersService } from '~/users/users.service';
 
 @Injectable()
 export class AuthService {
-    constructor(@InjectRepository(Account) private accountRepository: Repository<Account>) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService,
+    ) {}
 
-    async login() {}
+    async validateUser(email: string, password: string) {
+        const user = await this.usersService.findOne(email);
+        const hashedPassword = hash('md5', password);
 
-    async register(data: { email: string; password: string }) {
-        const accountWithHashedPassword = this.transformUserPassword(data);
-        const insertResult = await this.accountRepository.insert(accountWithHashedPassword);
+        if (user && user.password === hashedPassword) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password: _password, ...result } = user;
+            return result;
+        }
 
-        return { success: insertResult.identifiers.length > 0 };
+        return null;
     }
 
-    private transformUserPassword(accountRequest: { email: string; password: string }) {
-        return { ...accountRequest, password: hash('md5', accountRequest.password) };
+    login(user: { email: string; id: number }) {
+        const payload = { email: user.email, sub: user.id };
+        const access_token = this.jwtService.sign(payload);
+
+        return { access_token };
+    }
+
+    async register(userDto: RegisterRequestDto) {
+        const accountWithHashedPassword = this.hashPassword(userDto);
+        const insertResult = await this.usersService.createOne(accountWithHashedPassword);
+
+        return { success: !!insertResult };
+    }
+
+    private hashPassword(userDto: RegisterRequestDto) {
+        return RegisterRequestDto.createFromPlain(userDto.email, hash('md5', userDto.password));
     }
 }

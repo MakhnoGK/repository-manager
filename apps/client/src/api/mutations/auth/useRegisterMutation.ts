@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/apiClient';
-import type { RegisterResponse } from '@/api/types/auth.ts';
+import type { RegisterRequest, RegisterResponse } from '@/api/types/auth.ts';
 import { useMutation } from '@tanstack/react-query';
 
 export const useRegisterMutation = () =>

@@ -8,4 +8,4 @@ export type LoginResponse = {
 };
 
 export type RegisterRequest = LoginRequest;
-export type RegisterResponse = RegisterResponse;
+export type RegisterResponse = LoginResponse;

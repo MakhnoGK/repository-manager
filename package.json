@@ -1,5 +1,5 @@
 {
-  "workspaces": ["apps/*"],
+  "workspaces": ["apps/api", "apps/client"],
   "packageManager": "npm@11.1.0",
   "scripts": {
     "build": "turbo run build",

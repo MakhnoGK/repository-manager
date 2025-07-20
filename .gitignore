@@ -1,5 +1,7 @@
 .turbo
 
+tsconfig.build.tsbuildinfo
+
 # compiled output
 dist
 node_modules
