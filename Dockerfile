@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /repo
 
 COPY package.json package-lock.json turbo.json ./
@@ -12,7 +12,7 @@ RUN npm prune --production
 
 # RUNNER
 
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 COPY --from=builder /repo/node_modules ./node_modules
