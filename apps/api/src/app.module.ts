@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 const STATIC_ASSETS_PATH =
     process.env.NODE_ENV !== 'production'
         ? join(__dirname, '..', '..', 'client', 'dist')
-        : join(__dirname, '..', 'client', 'dist', 'static');
+        : join(__dirname, '..', 'client', 'dist');
 
 @Module({
     imports: [
