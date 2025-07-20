@@ -1,13 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { GithubRepository } from '~/repositories/entities/github-repository.entity';
 import { GithubRepositoryMapper } from '~/repositories/mappers/github-repository.mapper';
 import { GithubRepositoryApiResponse } from '~/repositories/types';
-import { AxiosError } from 'axios';
 
 type RequestWithUser = {
     user: {
@@ -29,12 +29,23 @@ export class RepositoryService {
     async createOne(path: string) {
         const repositoryInfo = await this.getRepositoryInfo(path);
         const createRepositoryDto = GithubRepositoryMapper.toDtoFromApiResponse(repositoryInfo);
-        const repository = this.repositoriesRepository.create({
-            ...createRepositoryDto,
-            createdBy: this.request.user.id,
-        });
 
-        return await this.repositoriesRepository.save(repository);
+        try {
+            const repository = this.repositoriesRepository.create({
+                ...createRepositoryDto,
+                createdBy: this.request.user.id,
+            });
+
+            return await this.repositoriesRepository.save(repository);
+        } catch (error) {
+            if (error instanceof QueryFailedError && 'code' in error) {
+                if (error.code === '23505') {
+                    throw new ConflictException('Repository already exists.');
+                }
+            }
+
+            throw error;
+        }
     }
 
     async updateOne(fullName: string) {
