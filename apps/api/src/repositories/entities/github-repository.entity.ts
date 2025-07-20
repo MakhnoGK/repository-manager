@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 import { User } from '~/users/entities/user.entity';
 
 @Entity({ name: 'repositories' })
@@ -27,4 +27,7 @@ export class GithubRepository {
 
     @Column()
     createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }

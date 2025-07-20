@@ -3,7 +3,7 @@ import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { GithubRepository } from '~/repositories/entities/github-repository.entity';
 import { GithubRepositoryMapper } from '~/repositories/mappers/github-repository.mapper';
 import { GithubRepositoryApiResponse } from '~/repositories/types';
@@ -36,8 +36,19 @@ export class RepositoryService {
         return await this.repositoriesRepository.save(repository);
     }
 
+    async updateOne(fullName: string) {
+        const githubRepositoryInfo = await this.getRepositoryInfo(fullName);
+        const githubUpdateRepositoryDto = GithubRepositoryMapper.toDtoFromApiResponse(githubRepositoryInfo);
+
+        return await this.repositoriesRepository.update({ fullName }, githubUpdateRepositoryDto);
+    }
+
     async getList() {
         return await this.repositoriesRepository.find({ where: { createdBy: this.request.user.id } });
+    }
+
+    async getOne(id: number) {
+        return await this.repositoriesRepository.findOne({ where: { id } });
     }
 
     private async getRepositoryInfo(path: string) {

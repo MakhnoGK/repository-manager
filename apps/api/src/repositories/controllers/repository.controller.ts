@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
 import { RepositoryService } from '~/repositories/services/repository.service';
 
@@ -16,5 +16,11 @@ export class RepositoryController {
     @Post('/')
     async create(@Body() createRepositoryDto: { fullName: string }) {
         return await this.repositoryService.createOne(createRepositoryDto.fullName);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('/')
+    async update(@Body() { fullName }: { fullName: string }) {
+        return await this.repositoryService.updateOne(fullName);
     }
 }

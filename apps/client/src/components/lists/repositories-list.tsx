@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { ArrowRight, Bug, GitFork, Star } from 'lucide-react';
+import { useUpdateRepositoryMutation } from '@/api/mutations/repositories/useUpdateRepositoryMutation.ts';
 import { useRepositoriesListQuery } from '@/api/queries/useRepositoriesListQuery.ts';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
@@ -7,6 +8,8 @@ import styles from './repository-list.module.css';
 
 export default function RepositoriesList() {
     const repositoriesQuery = useRepositoriesListQuery();
+    const updateRepositoryMutation = useUpdateRepositoryMutation();
+
     return (
         <div>
             {repositoriesQuery.isLoading && <div>Loading...</div>}
@@ -14,10 +17,15 @@ export default function RepositoriesList() {
 
             {repositoriesQuery.data?.map((repository) => {
                 const [author, name] = repository.fullName.split('/');
+
+                const doRepositoryUpdate = async () => {
+                    await updateRepositoryMutation.mutateAsync(repository.fullName);
+                };
+
                 return (
                     <Fragment key={repository.id}>
-                        <div className="grid items-center gap-4 px-4 py-5 md:grid-cols-4">
-                            <div className="order-2 flex items-center gap-2 md:order-none">
+                        <div className="flex justify-between items-center py-2 px-4">
+                            <div>
                                 <div className="flex flex-col gap-1">
                                     <h3 className="font-semibold">{name}</h3>
 
@@ -25,7 +33,7 @@ export default function RepositoriesList() {
                                 </div>
                             </div>
 
-                            <div className="order-1 flex gap-8 md:order-none md:col-span-2">
+                            <div className="flex gap-4">
                                 <div className={styles.itemStatisticsContainer}>
                                     <Star />
                                     {repository.stars}
@@ -42,12 +50,24 @@ export default function RepositoriesList() {
                                 </div>
                             </div>
 
-                            <Button variant="outline" asChild>
-                                <a className="order-3 ml-auto w-fit gap-2 md:order-none" href={repository.url}>
-                                    <span>View on Github</span>
-                                    <ArrowRight className="h-4 w-4" />
-                                </a>
-                            </Button>
+                            <div>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" type="button" onClick={doRepositoryUpdate}>
+                                        Update info
+                                    </Button>
+
+                                    <Button variant="link" asChild>
+                                        <a href={repository.url} target="_blank" rel="noopener noreferrer">
+                                            <span>View on Github</span>
+                                            <ArrowRight className="h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                </div>
+
+                                <div className="text-xs text-right mt-2 text-gray-500">
+                                    Last update: {repository.updatedAt}
+                                </div>
+                            </div>
                         </div>
                         <Separator />
                     </Fragment>

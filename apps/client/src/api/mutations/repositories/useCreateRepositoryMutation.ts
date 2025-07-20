@@ -13,6 +13,7 @@ export type Repository = {
     forks: number;
     issues: number;
     createdAt: string;
+    updatedAt: string;
 };
 
 type CreateRepositoryResponse = Repository;
