@@ -1,4 +1,4 @@
-import { useAccountQuery } from '@/api/queries/auth/useAccountQuery.ts';
+import { useAccountQuery } from '@/api/queries/users/useAccountQuery.ts';
 import LogoutButton from '@/components/logout-button.tsx';
 import { useNavigate } from '@tanstack/react-router';
 

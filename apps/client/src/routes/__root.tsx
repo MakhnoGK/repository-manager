@@ -1,5 +1,3 @@
-import * as React from 'react';
-import Navbar from '@/components/navbar.tsx';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 
 export const Route = createRootRoute({
@@ -7,10 +5,5 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-    return (
-        <React.Fragment>
-            <Navbar />
-            <Outlet />
-        </React.Fragment>
-    );
+    return <Outlet />;
 }
