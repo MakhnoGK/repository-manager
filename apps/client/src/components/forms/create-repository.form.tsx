@@ -56,6 +56,11 @@ export default function CreateRepositoryForm() {
                                 <Button type="submit">Add</Button>
                             </div>
                             <FormMessage />
+                            {createRepositoryMutation.isError && (
+                                <div className="text-red-500 text-sm font-bold">
+                                    {createRepositoryMutation.error.message}
+                                </div>
+                            )}
                         </div>
                     )}
                 />

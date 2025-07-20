@@ -1,12 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { GithubRepository } from '~/repositories/entities/github-repository.entity';
 import { GithubRepositoryMapper } from '~/repositories/mappers/github-repository.mapper';
 import { GithubRepositoryApiResponse } from '~/repositories/types';
+import { AxiosError } from 'axios';
 
 type RequestWithUser = {
     user: {
@@ -53,8 +54,18 @@ export class RepositoryService {
 
     private async getRepositoryInfo(path: string) {
         const url = `${RepositoryService.GITHUB_API_URL}${path}`;
-        const { data } = await firstValueFrom(this.httpService.get<GithubRepositoryApiResponse>(url));
 
-        return data;
+        try {
+            const { data } = await firstValueFrom(this.httpService.get<GithubRepositoryApiResponse>(url));
+            return data;
+        } catch (error) {
+            const axiosError = error as AxiosError;
+
+            if (axiosError.status === 404) {
+                throw new NotFoundException(`Repository not found: ${path}`);
+            }
+
+            throw new Error(`Failed to fetch repository info from GitHub.`);
+        }
     }
 }
