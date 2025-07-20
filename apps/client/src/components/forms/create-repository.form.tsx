@@ -1,17 +1,27 @@
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useCreateRepositoryMutation } from '@/api/mutations/repositories/useCreateRepositoryMutation.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { Form, FormField, FormMessage } from '@/components/ui/form.tsx';
 import { Label } from '@/components/ui/label.tsx';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
 
 type CreateRepositoryFormModel = {
     fullName: string;
 };
 
+const createRepositoryFormSchema = z.object({
+    fullName: z
+        .string()
+        .min(1, 'Repository full name is required')
+        .regex(/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/, 'Invalid repository full name format'),
+});
+
 export default function CreateRepositoryForm() {
     const createRepositoryMutation = useCreateRepositoryMutation();
     const form = useForm<CreateRepositoryFormModel>({
+        resolver: zodResolver(createRepositoryFormSchema),
         defaultValues: {
             fullName: '',
         },
@@ -29,22 +39,23 @@ export default function CreateRepositoryForm() {
                     control={form.control}
                     name="fullName"
                     render={({ field }) => (
-                        <div className="flex gap-2 items-center">
+                        <div className="flex flex-col gap-2">
                             <Label htmlFor="fullName" className="text-nowrap">
                                 Add new repository:
                             </Label>
 
-                            <Input
-                                id="fullName"
-                                type="text"
-                                className="flex-auto"
-                                placeholder="octocat/Spoon-Knife"
-                                {...field}
-                            />
+                            <div className="flex gap-2 items-center">
+                                <Input
+                                    id="fullName"
+                                    type="text"
+                                    className="flex-auto"
+                                    placeholder="octocat/Spoon-Knife"
+                                    {...field}
+                                />
 
+                                <Button type="submit">Add</Button>
+                            </div>
                             <FormMessage />
-
-                            <Button type="submit">Add</Button>
                         </div>
                     )}
                 />
