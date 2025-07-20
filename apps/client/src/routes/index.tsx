@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '@/api/apiClient.ts';
 import CreateRepositoryForm from '@/components/forms/create-repository.form.tsx';
 import RepositoriesList from '@/components/lists/repositories-list.tsx';
-import { Button } from '@/components/ui/button.tsx';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
@@ -11,10 +10,6 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
     const [, setUser] = useState<unknown>(null);
-
-    const doLogout = async () => {
-        await apiClient.post('/auth/logout', {}, { withCredentials: true });
-    };
 
     useEffect(() => {
         apiClient
@@ -26,7 +21,6 @@ function RouteComponent() {
 
     return (
         <div>
-            <Button onClick={doLogout}>Logout</Button>
             <CreateRepositoryForm />
             <hr className="my-4" />
             <RepositoriesList />

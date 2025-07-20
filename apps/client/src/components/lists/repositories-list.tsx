@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { ArrowRight, Bug, GitFork, Star } from 'lucide-react';
 import { useDeleteRepositoryMutation } from '@/api/mutations/repositories/useDeleteRepositoryMutation.ts';
 import { useUpdateRepositoryMutation } from '@/api/mutations/repositories/useUpdateRepositoryMutation.ts';
-import { useRepositoriesListQuery } from '@/api/queries/useRepositoriesListQuery.ts';
+import { useRepositoriesListQuery } from '@/api/queries/repositories/useRepositoriesListQuery.ts';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
 import styles from './repository-list.module.css';
