@@ -1,5 +1,5 @@
 import { Expose, plainToInstance } from 'class-transformer';
-import { IsEmail, IsStrongPassword } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 
 export class RegisterRequestDto {
     @Expose()
@@ -7,10 +7,10 @@ export class RegisterRequestDto {
     email: string;
 
     @Expose()
-    @IsStrongPassword()
+    @IsString()
     password: string;
 
-    static createFromPlain(email: string, password: string): RegisterRequestDto {
-        return plainToInstance(RegisterRequestDto, { email, password });
+    static createFromPlain(plain: object): RegisterRequestDto {
+        return plainToInstance(RegisterRequestDto, plain);
     }
 }

@@ -12,5 +12,5 @@ export default function RegisterView() {
         if (success) await navigate({ to: '/login' });
     };
 
-    return <RegisterForm onSubmit={doRegister} />;
+    return <RegisterForm onSubmit={doRegister} error={registerMutation.error?.message} />;
 }

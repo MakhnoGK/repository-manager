@@ -1,8 +1,9 @@
 import { hash } from 'node:crypto';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterRequestDto } from '~/auth/dto/register-request.dto';
 import { UsersService } from '~/users/users.service';
+import { QueryFailedError } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -33,12 +34,26 @@ export class AuthService {
 
     async register(userDto: RegisterRequestDto) {
         const accountWithHashedPassword = this.hashPassword(userDto);
-        const insertResult = await this.usersService.createOne(accountWithHashedPassword);
 
-        return { success: !!insertResult };
+        try {
+            const insertResult = await this.usersService.createOne(accountWithHashedPassword);
+
+            return { success: !!insertResult };
+        } catch (error) {
+            if (error instanceof QueryFailedError && 'code' in error) {
+                if (error.code === '23505') {
+                    throw new ConflictException('Email already exists');
+                }
+            }
+
+            throw error;
+        }
     }
 
     private hashPassword(userDto: RegisterRequestDto) {
-        return RegisterRequestDto.createFromPlain(userDto.email, hash('md5', userDto.password));
+        return RegisterRequestDto.createFromPlain({
+            email: userDto.email,
+            password: hash('md5', userDto.password),
+        });
     }
 }

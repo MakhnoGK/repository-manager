@@ -15,6 +15,7 @@ type RegisterFormModel = {
 
 type RegisterFormProps = {
     onSubmit?: (data: RegisterFormModel) => void;
+    error?: string;
 };
 
 const registerFormSchema = z.object({
@@ -22,7 +23,7 @@ const registerFormSchema = z.object({
     password: z.string().min(8, 'Password must be at least 6 characters long'),
 });
 
-export default function RegisterForm({ onSubmit }: RegisterFormProps) {
+export default function RegisterForm({ error, onSubmit }: RegisterFormProps) {
     const form = useForm<RegisterFormModel>({
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
@@ -48,6 +49,8 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
                             </Button>
                         </Link>
                     </CardAction>
+
+                    {error && <div className="text-red-500 font-bold text-sm mt-4">{error}</div>}
                 </CardHeader>
 
                 <CardContent>
