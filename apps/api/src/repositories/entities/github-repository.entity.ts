@@ -1,8 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
-import { User } from '~/users/entities/user.entity';
+import { Column, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'repositories' })
-@Unique('fullName', ['fullName'])
+@Unique('UNIQUE_REPOSITORY_PER_AUTHOR', ['fullName', 'createdBy'])
 export class GithubRepository {
     @PrimaryGeneratedColumn()
     id: number;
