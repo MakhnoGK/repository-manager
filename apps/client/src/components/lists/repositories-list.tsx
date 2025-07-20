@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { ArrowRight, Bug, GitFork, Star } from 'lucide-react';
+import { useDeleteRepositoryMutation } from '@/api/mutations/repositories/useDeleteRepositoryMutation.ts';
 import { useUpdateRepositoryMutation } from '@/api/mutations/repositories/useUpdateRepositoryMutation.ts';
 import { useRepositoriesListQuery } from '@/api/queries/useRepositoriesListQuery.ts';
 import { Separator } from '@/components/ui/separator';
@@ -8,7 +9,9 @@ import styles from './repository-list.module.css';
 
 export default function RepositoriesList() {
     const repositoriesQuery = useRepositoriesListQuery();
+
     const updateRepositoryMutation = useUpdateRepositoryMutation();
+    const deleteRepositoryMutation = useDeleteRepositoryMutation();
 
     return (
         <div>
@@ -20,6 +23,12 @@ export default function RepositoriesList() {
 
                 const doRepositoryUpdate = async () => {
                     await updateRepositoryMutation.mutateAsync(repository.fullName);
+                };
+
+                const doRepositoryDelete = async () => {
+                    if (confirm(`Are you sure you want to delete the repository ${repository.fullName}?`)) {
+                        await deleteRepositoryMutation.mutateAsync(repository.id);
+                    }
                 };
 
                 return (
@@ -54,6 +63,10 @@ export default function RepositoriesList() {
                                 <div className="flex gap-2">
                                     <Button variant="outline" type="button" onClick={doRepositoryUpdate}>
                                         Update info
+                                    </Button>
+
+                                    <Button variant="destructive" type="button" onClick={doRepositoryDelete}>
+                                        Delete
                                     </Button>
 
                                     <Button variant="link" asChild>

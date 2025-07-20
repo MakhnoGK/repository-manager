@@ -43,12 +43,12 @@ export class RepositoryService {
         return await this.repositoriesRepository.update({ fullName }, githubUpdateRepositoryDto);
     }
 
-    async getList() {
+    async getAll() {
         return await this.repositoriesRepository.find({ where: { createdBy: this.request.user.id } });
     }
 
-    async getOne(id: number) {
-        return await this.repositoriesRepository.findOne({ where: { id } });
+    async deleteOne(id: number) {
+        return await this.repositoriesRepository.delete(id);
     }
 
     private async getRepositoryInfo(path: string) {

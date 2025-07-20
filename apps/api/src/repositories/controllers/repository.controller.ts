@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
 import { RepositoryService } from '~/repositories/services/repository.service';
 
@@ -9,7 +9,7 @@ export class RepositoryController {
     @UseGuards(JwtAuthGuard)
     @Get('/')
     async getAll() {
-        return await this.repositoryService.getList();
+        return await this.repositoryService.getAll();
     }
 
     @UseGuards(JwtAuthGuard)
@@ -22,5 +22,11 @@ export class RepositoryController {
     @Put('/')
     async update(@Body() { fullName }: { fullName: string }) {
         return await this.repositoryService.updateOne(fullName);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/:id')
+    async delete(@Param('id') id: string) {
+        return await this.repositoryService.deleteOne(Number(id));
     }
 }
