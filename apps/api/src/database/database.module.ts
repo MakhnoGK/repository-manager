@@ -7,7 +7,7 @@ import { User } from '~/users/entities/user.entity';
     imports: [
         TypeOrmModule.forRoot({
             type: 'postgres',
-            host: 'localhost',
+            host: process.env.NODE_ENV === 'production' ? 'db' : 'localhost',
             port: 5432,
             database: 'repository-manager',
             username: 'root',

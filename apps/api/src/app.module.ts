@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
     imports: [
         DatabaseModule,
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', '..', 'client', 'dist'),
+            rootPath: join(__dirname, '..', 'client', 'dist'),
             renderPath: '/',
             serveStaticOptions: {
                 fallthrough: false,

@@ -10,7 +10,7 @@ export const Route = createFileRoute('/')({
 });
 
 function RouteComponent() {
-    const [user, setUser] = useState<unknown>(null);
+    const [, setUser] = useState<unknown>(null);
 
     const doLogout = async () => {
         await apiClient.post('/auth/logout', {}, { withCredentials: true });
