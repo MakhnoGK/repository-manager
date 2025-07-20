@@ -7,15 +7,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 
+const STATIC_ASSETS_PATH =
+    process.env.NODE_ENV !== 'production'
+        ? join(__dirname, '..', '..', 'client', 'dist')
+        : join(__dirname, '..', 'client', 'dist', 'static');
+
 @Module({
     imports: [
         DatabaseModule,
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', 'client', 'dist'),
-            renderPath: '/',
-            serveStaticOptions: {
-                fallthrough: false,
-            },
+            rootPath: STATIC_ASSETS_PATH,
         }),
         AuthModule,
         RepositoriesModule,
