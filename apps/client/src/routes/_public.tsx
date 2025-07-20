@@ -18,7 +18,9 @@ function RouteComponent() {
 
     return (
         <div className="h-screen flex items-center justify-center">
-            <Outlet />
+            <div className="w-[384px]">
+                <Outlet />
+            </div>
         </div>
     );
 }
