@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 export const useAccountQuery = () =>
     useQuery({
         queryKey: ['account'],
+        retry: false,
         queryFn: async () =>
             await apiClient
                 .get<{

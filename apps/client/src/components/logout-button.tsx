@@ -10,7 +10,10 @@ export default function LogoutButton({ onLogout }: LogoutButtonProps) {
 
     const doLogout = async () => {
         const response = await logoutMutation.mutateAsync();
-        if (response.success) onLogout?.();
+
+        if (response.success) {
+            void onLogout?.();
+        }
     };
 
     return (

@@ -10,6 +10,8 @@ function RouteComponent() {
     const account = useAccountQuery();
     const navigate = useNavigate();
 
+    console.log(account);
+
     useEffect(() => {
         if (!account.isPending && account.data) void navigate({ to: '/' });
     }, [account.isPending, account.data]);
