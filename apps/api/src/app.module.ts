@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DatabaseModule } from '~/database/database.module';
+import { RepositoriesModule } from '~/repositories/repositories.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
             },
         }),
         AuthModule,
+        RepositoriesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

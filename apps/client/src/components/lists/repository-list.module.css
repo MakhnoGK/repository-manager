@@ -1,0 +1,6 @@
+.itemStatisticsContainer {
+    display: flex;
+    font-family: monospace;
+    align-items: center;
+    gap: 8px;
+}

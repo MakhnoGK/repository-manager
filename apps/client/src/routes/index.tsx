@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/api/apiClient.ts';
-import { Button } from '@/components/ui/button';
+import CreateRepositoryForm from '@/components/forms/create-repository.form.tsx';
+import RepositoriesList from '@/components/lists/repositories-list.tsx';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
@@ -24,8 +25,9 @@ function RouteComponent() {
 
     return (
         <div>
-            {JSON.stringify(user)}
-            <Button onClick={doLogout}>Logout</Button>
+            <CreateRepositoryForm />
+            <hr className="my-4" />
+            <RepositoriesList />
         </div>
     );
 }

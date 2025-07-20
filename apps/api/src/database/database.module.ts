@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GithubRepository } from '~/repositories/entities/github-repository.entity';
 import { User } from '~/users/entities/user.entity';
 
 @Module({
@@ -11,7 +12,7 @@ import { User } from '~/users/entities/user.entity';
             database: 'repository-manager',
             username: 'root',
             password: 'root',
-            entities: [User],
+            entities: [User, GithubRepository],
             synchronize: true,
         }),
     ],
