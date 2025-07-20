@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { GithubRepository } from '~/repositories/entities/github-repository.entity';
 
 @Entity({ name: 'users' })
 @Unique('email', ['email'])

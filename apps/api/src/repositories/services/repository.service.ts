@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { firstValueFrom } from 'rxjs';
 import { Repository } from 'typeorm';
@@ -7,25 +8,36 @@ import { GithubRepository } from '~/repositories/entities/github-repository.enti
 import { GithubRepositoryMapper } from '~/repositories/mappers/github-repository.mapper';
 import { GithubRepositoryApiResponse } from '~/repositories/types';
 
-@Injectable()
+type RequestWithUser = {
+    user: {
+        id: number;
+    };
+};
+
+@Injectable({ scope: Scope.REQUEST })
 export class RepositoryService {
     private static GITHUB_API_URL = 'https://api.github.com/repos/';
 
     constructor(
         @InjectRepository(GithubRepository) private readonly repositoriesRepository: Repository<GithubRepository>,
         private readonly httpService: HttpService,
+        @Inject(REQUEST)
+        private readonly request: RequestWithUser,
     ) {}
 
     async createOne(path: string) {
         const repositoryInfo = await this.getRepositoryInfo(path);
         const createRepositoryDto = GithubRepositoryMapper.toDtoFromApiResponse(repositoryInfo);
-        const repository = this.repositoriesRepository.create(createRepositoryDto);
+        const repository = this.repositoriesRepository.create({
+            ...createRepositoryDto,
+            createdBy: this.request.user.id,
+        });
 
         return await this.repositoriesRepository.save(repository);
     }
 
     async getList() {
-        return await this.repositoriesRepository.find();
+        return await this.repositoriesRepository.find({ where: { createdBy: this.request.user.id } });
     }
 
     private async getRepositoryInfo(path: string) {
