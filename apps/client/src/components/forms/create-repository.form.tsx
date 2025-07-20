@@ -29,16 +29,26 @@ export default function CreateRepositoryForm() {
                     control={form.control}
                     name="fullName"
                     render={({ field }) => (
-                        <>
-                            <Label htmlFor="fullName">Repository:</Label>
-                            <Input id="fullName" type="text" placeholder="octocat/Spoon-Knife" {...field} />
+                        <div className="flex gap-2 items-center">
+                            <Label htmlFor="fullName" className="text-nowrap">
+                                Add new repository:
+                            </Label>
+
+                            <Input
+                                id="fullName"
+                                type="text"
+                                className="flex-auto"
+                                placeholder="octocat/Spoon-Knife"
+                                {...field}
+                            />
+
                             <FormMessage />
-                        </>
+
+                            <Button type="submit">Add</Button>
+                        </div>
                     )}
                 />
             </Form>
-
-            <Button type="submit">Add</Button>
         </form>
     );
 }
