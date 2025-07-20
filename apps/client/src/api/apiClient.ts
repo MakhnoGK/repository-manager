@@ -17,5 +17,7 @@ apiClient.interceptors.response.use(
         if (error.status === 401 && !ALLOWED_ROUTES.includes(window.location.pathname)) {
             window.location.href = '/login';
         }
+
+        return Promise.reject(error.response.data);
     },
 );

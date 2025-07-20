@@ -11,10 +11,10 @@ function RouteComponent() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!account.isPending && account.data) void navigate({ to: '/' });
-    }, [account.isPending, account.data]);
+        if (!account.isPending && account?.data) void navigate({ to: '/' });
+    }, [account.isPending, account?.data]);
 
-    if (account.isPending || (account.isFetched && account.data)) return null;
+    if (account.isPending || (account.isFetched && account?.data)) return null;
 
     return (
         <div className="h-screen flex items-center justify-center">

@@ -1,6 +1,7 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
+import { UserDto } from '~/users/dto/user.dto';
 import { UsersService } from '~/users/users.service';
 
 @Controller('users')
@@ -9,8 +10,10 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard)
     @Get('me')
-    getMe(@Req() request: Request) {
-        const user = request.user as { email: string };
-        return this.usersService.findOne(user.email);
+    async getMe(@Req() request: Request) {
+        const requestUser = request.user as { email: string };
+        const user = await this.usersService.findOne(requestUser.email);
+
+        return UserDto.createFromPlain(user);
     }
 }

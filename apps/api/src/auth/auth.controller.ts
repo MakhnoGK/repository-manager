@@ -5,6 +5,7 @@ import { RegisterRequestDto } from '~/auth/dto/register-request.dto';
 import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
 import { LocalAuthGuard } from '~/auth/guard/local-auth.guard';
 import { TokenType } from '~/auth/types';
+import { BaseResponseDto } from '~/dto/base-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +13,9 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() data: RegisterRequestDto) {
-        return await this.authService.register(data);
+        const result = await this.authService.register(data);
+
+        return BaseResponseDto.createFromPlain(result);
     }
 
     @UseGuards(LocalAuthGuard)
@@ -32,13 +35,13 @@ export class AuthController {
             sameSite: 'strict',
         });
 
-        return { success: true };
+        return BaseResponseDto.createFromPlain({ success: true });
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('logout')
     logout(@Res({ passthrough: true }) response: ResponseType) {
         response.cookie(TokenType.ACCESS, '');
-        return { success: true };
+        return BaseResponseDto.createFromPlain({ success: true });
     }
 }

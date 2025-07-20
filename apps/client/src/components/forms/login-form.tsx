@@ -14,6 +14,7 @@ type LoginFormModel = {
 };
 
 type LoginFormProps = {
+    error?: string;
     onSubmit?: (data: LoginFormModel) => void;
 };
 
@@ -22,7 +23,7 @@ const loginFormSchema = z.object({
     password: z.string().min(8, 'Password must be at least 6 characters long'),
 });
 
-export default function LoginForm({ onSubmit }: LoginFormProps) {
+export default function LoginForm({ error, onSubmit }: LoginFormProps) {
     const form = useForm<LoginFormModel>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -48,6 +49,8 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
                             </Button>
                         </Link>
                     </CardAction>
+
+                    {error && <div className="text-red-500 font-bold text-sm mt-4">{error}</div>}
                 </CardHeader>
 
                 <CardContent>

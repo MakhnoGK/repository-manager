@@ -13,5 +13,9 @@ export default function LoginView() {
         if (result.success) await navigate({ to: '/', replace: true });
     };
 
-    return <LoginForm onSubmit={doLogin} />;
+    return (
+        <div>
+            <LoginForm onSubmit={doLogin} error={loginMutation.error?.message} />
+        </div>
+    );
 }
