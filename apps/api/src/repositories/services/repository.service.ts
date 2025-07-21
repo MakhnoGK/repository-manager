@@ -1,13 +1,9 @@
-import { HttpService } from '@nestjs/axios';
-import { ConflictException, Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AxiosError } from 'axios';
-import { firstValueFrom } from 'rxjs';
 import { QueryFailedError, Repository } from 'typeorm';
 import { GithubRepository } from '~/repositories/entities/github-repository.entity';
-import { GithubRepositoryMapper } from '~/repositories/mappers/github-repository.mapper';
-import { GithubRepositoryApiResponse } from '~/repositories/types';
+import { GithubService } from '~/repositories/services/github.service';
 
 type RequestWithUser = {
     user: {
@@ -21,14 +17,13 @@ export class RepositoryService {
 
     constructor(
         @InjectRepository(GithubRepository) private readonly repositoriesRepository: Repository<GithubRepository>,
-        private readonly httpService: HttpService,
         @Inject(REQUEST)
         private readonly request: RequestWithUser,
+        private readonly githubService: GithubService,
     ) {}
 
     async createOne(path: string) {
-        const repositoryInfo = await this.getRepositoryInfo(path);
-        const createRepositoryDto = GithubRepositoryMapper.toDtoFromApiResponse(repositoryInfo);
+        const createRepositoryDto = await this.githubService.getRepositoryInfo(path);
 
         try {
             const repository = this.repositoriesRepository.create({
@@ -49,8 +44,7 @@ export class RepositoryService {
     }
 
     async updateOne(fullName: string) {
-        const githubRepositoryInfo = await this.getRepositoryInfo(fullName);
-        const githubUpdateRepositoryDto = GithubRepositoryMapper.toDtoFromApiResponse(githubRepositoryInfo);
+        const githubUpdateRepositoryDto = await this.githubService.getRepositoryInfo(fullName);
 
         return await this.repositoriesRepository.update({ fullName }, githubUpdateRepositoryDto);
     }
@@ -61,22 +55,5 @@ export class RepositoryService {
 
     async deleteOne(id: number) {
         return await this.repositoriesRepository.delete(id);
-    }
-
-    private async getRepositoryInfo(path: string) {
-        const url = `${RepositoryService.GITHUB_API_URL}${path}`;
-
-        try {
-            const { data } = await firstValueFrom(this.httpService.get<GithubRepositoryApiResponse>(url));
-            return data;
-        } catch (error) {
-            const axiosError = error as AxiosError;
-
-            if (axiosError.status === 404) {
-                throw new NotFoundException(`Repository not found: ${path}`);
-            }
-
-            throw new Error(`Failed to fetch repository info from GitHub.`);
-        }
     }
 }

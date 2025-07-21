@@ -45,4 +45,5 @@ UI will be available at `http://localhost:5437` and API at `http://localhost:300
 
 ## Future plans
 
-- Add tasks queue for better error handling of third-pary API requests
+- Add pagination to support large amount of repositories
+- Add tasks queue for better error handling of third-party API requests
